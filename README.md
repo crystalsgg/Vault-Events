@@ -6,21 +6,18 @@ https://github.com/MilkBowl/VaultAPI
 
 ## Dependency information
 
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
+```kotlin
+repositories {
+    maven {
+        name = "crystalsRepository"
+        url = uri("https://repo.crystals.gg/releases")
+        credentials(PasswordCredentials::class)
+    }
+}
 
-<dependencies>
-    <dependency>
-        <groupId>com.github.AuroraLS3</groupId>
-        <artifactId>Vault-Events</artifactId>
-        <version>{commit}</version>
-    </dependency>
-</dependencies>
+dependencies {
+    implementation("net.crystals:VaultEvents:1.7.1")
+}
 ```
 
 plugin.yml:
