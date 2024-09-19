@@ -1,6 +1,7 @@
 package com.djrapitops.vaultevents;
 
 import com.djrapitops.vaultevents.events.economy.*;
+import com.djrapitops.vaultevents.events.economy.pre.PlayerPreDepositEvent;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
@@ -22,8 +23,9 @@ public class EconomyWrapper implements Economy {
         this.original = original;
     }
 
-    private <T extends Event> void callEvent(T event) {
+    private <T extends Event> T callEvent(T event) {
         Bukkit.getPluginManager().callEvent(event);
+        return event;
     }
 
     public boolean isEnabled() {
@@ -136,26 +138,30 @@ public class EconomyWrapper implements Economy {
 
     @Deprecated
     public EconomyResponse depositPlayer(String s, double amount) {
-        EconomyResponse response = original.depositPlayer(Bukkit.getOfflinePlayer(s), amount);
+        PlayerPreDepositEvent preEvent = callEvent(new PlayerPreDepositEvent(Bukkit.getOfflinePlayer(s), amount));
+        EconomyResponse response = original.depositPlayer(Bukkit.getOfflinePlayer(s), preEvent.getAmount());
         callEvent(new PlayerDepositEvent(Bukkit.getOfflinePlayer(s), amount, response));
         return response;
     }
 
     public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
-        EconomyResponse response = original.depositPlayer(player, amount);
+        PlayerPreDepositEvent preEvent = callEvent(new PlayerPreDepositEvent(player, amount));
+        EconomyResponse response = original.depositPlayer(player, preEvent.getAmount());
         callEvent(new PlayerDepositEvent(player, amount, response));
         return response;
     }
 
     @Deprecated
     public EconomyResponse depositPlayer(String s, String s1, double amount) {
-        EconomyResponse response = original.depositPlayer(Bukkit.getOfflinePlayer(s), s1, amount);
+        PlayerPreDepositEvent preEvent = callEvent(new PlayerPreDepositEvent(Bukkit.getOfflinePlayer(s), amount, s1));
+        EconomyResponse response = original.depositPlayer(Bukkit.getOfflinePlayer(s), s1, preEvent.getAmount());
         callEvent(new PlayerDepositEvent(Bukkit.getOfflinePlayer(s), amount, s1, response));
         return response;
     }
 
     public EconomyResponse depositPlayer(OfflinePlayer player, String s, double amount) {
-        EconomyResponse response = original.depositPlayer(player, s, amount);
+        PlayerPreDepositEvent preEvent = callEvent(new PlayerPreDepositEvent(player, amount, s));
+        EconomyResponse response = original.depositPlayer(player, s, preEvent.getAmount());
         callEvent(new PlayerDepositEvent(player, amount, s, response));
         return response;
     }
